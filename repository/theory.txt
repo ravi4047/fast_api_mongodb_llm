@@ -1,0 +1,3 @@
+After long time of struggling, and even playing with DI structure, I finally came to conclude that I will be using Repository method.
+
+Now, I am doing the same structure as I use to do in frontend apps.

@@ -1,0 +1,42 @@
+dating_app_ai/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI entry point
+│   ├── config.py            # Configuration settings
+│   ├── db/
+│   │   ├── __init__.py
+│   │   ├── mongodb.py       # MongoDB connection and operations
+│   │   └── models.py        # Data models
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── auth.py          # Authentication middleware
+│   │   ├── routes.py        # API endpoints
+│   │   └── dependencies.py  # FastAPI dependencies
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── ai_engine.py     # Main AI orchestration
+│   │   ├── graph/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py      # Base LangGraph setup
+│   │   │   ├── nodes/       # Individual graph nodes
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── intent_recognition.py
+│   │   │   │   ├── entity_extraction.py
+│   │   │   │   ├── user_profile_actions.py
+│   │   │   │   ├── messaging_actions.py
+│   │   │   │   ├── matching_actions.py
+│   │   │   │   └── personal_task_actions.py
+│   │   │   └── workflows/   # Graph workflows
+│   │   │       ├── __init__.py
+│   │   │       └── conversation.py
+│   │   └── utils/
+│   │       ├── __init__.py
+│   │       └── nlp_utils.py # NLP helper functions
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_api.py
+│   └── test_graph.py
+├── requirements.txt
+├── Dockerfile
+└── docker-compose.yml
