@@ -1,7 +1,10 @@
-from pymongo import AsyncMongoClient, asynchronous
+from pymongo import AsyncMongoClient
 from pymongo.asynchronous.database import AsyncDatabase
 from typing import Optional
 import logging
+from model.chat_prompt import ChatPrompt, Conversation
+from fastapi import HTTPException
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +57,12 @@ class DatabaseManager:
         return self.database["matches"]
     
     @property
+    def chat_prompts(self):
+        if self.database is None:
+            raise
+        return self.database["messages"]
+
+    @property
     def messages(self):
         if self.database is None:
             raise
@@ -71,5 +80,74 @@ class DatabaseManager:
             raise
         return self.database["feeds_history"]
     
-# Global instance
-db_manager = DatabaseManager()
+    @property
+    def bot_conversations(self):
+        if self.database is None:
+            raise
+        return self.database["bot_conversations"]
+    
+    ## Note, here we won't handle any object parameter or error. This is just for database operation. All error handling stuff 
+    ## will be done in repository/controller/nodes/tools etc.
+
+    ## Chat prompts --------------------------------------------------------- START ---------------------------
+    def save_chat_history(self, data):
+        return self.chat_history.insert_one(data)
+    
+    ## Claude is throwing Http 500 exception for database error. 404 for not found one.
+    # async def save_chat_prompt(self, chat_prompt: ChatPrompt)->str:
+    async def save_chat_prompt(self, conv_id: str, uid: str, user_prompt: str, ai_prompt: str, timestamp: datetime)->str:
+        try:
+            # chat_prompt = ChatPrompt(
+            #     conversation_id=conv_id,
+            #     uid=uid,
+            #     ai_content=ai_prompt,
+            #     user_prompt=user_prompt,
+            #     timestamp=timestamp
+            # )
+            chat_prompt = ChatPrompt.create(conv_id=conv_id, timestamp=timestamp, ai_content=ai_prompt, user_prompt=user_prompt)
+            result = await self.chat_prompts.insert_one(chat_prompt)
+            return result.inserted_id
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Error in inserting chat prompt {e}")
+        
+    async def paging_chat_prompts(self, conv_id, page: int, per_page:int)->list[ChatPrompt]:
+        # skip = page*per_page
+        ## I think make the page > 0, hence
+        skip = (page-1)*per_page
+        try:
+            result = await self.chat_prompts.find({"conversation_id": conv_id}).skip(skip).limit(per_page).to_list()
+            # return result ## I think I should parse it.
+            return [ChatPrompt(**chat) for chat in result]
+        except Exception as e:
+            raise HTTPException(status_code=500)
+    ## Chat prompts --------------------------------------------------------- STOP ---------------------------    
+    
+    ## Conversation stuff ------------------------------------------------------------------ START --------------------
+    async def add_conversation(self, title:str, user_id:str, timestamp: datetime):
+        try:
+            print(title, user_id, timestamp)
+            # conv = Conversation(uid=user_id, title=title, timestamp=timestamp)
+            conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
+            result = await self.bot_conversations.insert_one(document=conv)
+            return result.inserted_id
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Error in inserting conversation prompt {e}")
+        
+    async def paging_conversations(self, user_id, page: int, per_page:int)->list[Conversation]:
+        # skip = page*per_page
+        ## I think make the page > 0, hence
+        skip = (page-1)*per_page
+        try:
+            result = await self.bot_conversations.find({"uid": user_id}).skip(skip).limit(per_page).to_list()
+            # return list
+            return [Conversation(**conv) for conv in result]
+        except Exception as e:
+            raise HTTPException(status_code=500)
+    ## Conversation stuff ------------------------------------------------------------------ STOP --------------------
+
+    ## 
+
+
+# # Global instance
+# db_manager = DatabaseManager()
+### I am initializing it in main.py as Global instance

@@ -7,3 +7,5 @@ class FeedHistoryEntry(BaseModel):
     user_id: str
     profile_id: str
     timestamp: datetime
+
+    

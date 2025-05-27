@@ -10,9 +10,11 @@ from pymongo import MongoClient
 from langgraph.checkpoint.mongodb import MongoDBSaver
 from token_and_rate_limiting_system.token_limiting import limit_settings
 
-from mongodb_statefulqa_bot_pythondb.configuration import DB_NAME, EMBEDDING_MODEL , GROQ_API_KEY, LLAMA_MODEL, MONGODB_URI
+from configuration import DB_NAME, EMBEDDING_MODEL , GROQ_API_KEY, LLAMA_MODEL, MONGODB_URI
 
-from mdb.db_manager import db_manager
+from mdb.db_manager import DatabaseManager
+
+from chatbot.react_chatbot import ReActDatingChatbot
 
 import logging
 
@@ -27,7 +29,13 @@ app = FastAPI()
 
 # https://claude.ai/chat/74a39efa-66d4-41a6-9240-38eea7937760
 # Global variable for the client
+## 🤔🤔 Now I am confused, where should the global variables be initialized i.e. object be created? Should it be initialized in
+##  the main.py i.e. the beginning file of the fastapi project or inside the file where their classes are created. I want to follow singleton
+## approach thus creating robust architect
+## -->> Solution: To follow singleton approach, use in main.py
 mongo_client = None
+db_manager = DatabaseManager()
+chatbot = ReActDatingChatbot(db_manager, "open-api-key")
 
 # async def get_db():
 def get_db():
@@ -79,6 +87,9 @@ async def lifespan(app:FastAPI):
         ## Newest one
         await db_manager.connect(MONGODB_URI, DB_NAME)
         logger.info("Application startup completed")
+
+
+
         yield
     except Exception as e:
         logger.error(f"Failed to start application: {str(e)}")
