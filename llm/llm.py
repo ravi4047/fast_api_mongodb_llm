@@ -1,7 +1,6 @@
 from langchain_groq import ChatGroq
 import os
-from mongodb_statefulqa_bot_pythondb.configuration import GROQ_API_KEY
-from configuration import LLAMA_MODEL
+from configuration import LLAMA_MODEL, GROQ_API_KEY
 
 # from  config_py import config
 
@@ -16,8 +15,14 @@ def setup_llm(llama_model:str, grok_api_key:str):
     llm = ChatGroq(
         # model=config["LLAMA_MODEL"],
         model=llama_model,
-          temperature=0.3)
+          temperature=0.3,
+          )
     return llm
+
+def get_llm():
+    if LLAMA_MODEL is None or GROQ_API_KEY is None:
+        raise ValueError("Please check or .env variables. Some variable missing...")
+    return setup_llm(LLAMA_MODEL, GROQ_API_KEY)
 
 ### ------------------ WE ARE NOT DOING THIS. WE ARE JUST MAKING IN DEPENDENCY INJECTION -------- START
 # class AiEngine:

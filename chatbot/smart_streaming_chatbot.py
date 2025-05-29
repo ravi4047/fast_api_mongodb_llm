@@ -6,8 +6,9 @@
 # After realizing that we can halt the 
 # ==================== SMART STREAMING CHATBOT ====================
 
-from typing import Any, AsyncGenerator, Dict
+from typing import Any, AsyncGenerator, Dict, List
 
+from chatbot.intent_analyzer import IntentAnalyzer
 from enums.intents import ResponseStrategy
 
 

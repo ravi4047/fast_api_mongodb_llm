@@ -2,10 +2,13 @@ from fastapi import APIRouter, Request, Response
 
 from typing import Optional, List
 from model.chat import ChatModel
+from model.chat_prompt import ChatPrompt
 
 from pymongo.collection import Collection
 
-from dto.chat_request_dto import ChatRequestDto
+from dto.chat_request_dto import ChatRequest
+
+from main import db_manager
 
 router = APIRouter()
 
@@ -27,7 +30,7 @@ def list_chats(request: Request):
     return 
 
 @router.post("/chat", response_description="Just do success true")
-def chat_endpoint(data: ChatRequestDto, request: Request):
+def chat_endpoint(data: ChatRequest, request: Request):
     """
     API endpoint to interact with the chatbot using langgraph and search tools.
     It dynamically selects the model specified in the request.
@@ -38,3 +41,14 @@ def chat_endpoint(data: ChatRequestDto, request: Request):
     print("chat data", chatData)
 
     return
+
+@router.get("/", response_description="List all books", response_model=List[ChatPrompt])
+async def paging_chats(request: Request):
+    uid = request.headers.get("uid")
+    print(request.query_params)
+    page = int(request.query_params["page"]) # I need to cast str to int
+    page_size = int(request.query_params["page_size"])
+
+    response = await db_manager.paging_chat_prompts(uid, page, page_size)
+
+    return response

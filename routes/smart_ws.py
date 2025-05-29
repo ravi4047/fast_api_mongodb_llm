@@ -1,9 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import StreamingResponse
 import json
 # from chatbot.react_chatbot import ReActDatingChatbot
 from dto.chat_request_dto import ChatRequest
-from main import chatbot, db_manager
+from main_old import chatbot, db_manager
 from model.chat_prompt import ChatPrompt
 from datetime import datetime
 
@@ -20,7 +20,14 @@ app = APIRouter()
 # ==================== SMART STREAMING ENDPOINT ====================
 
 @app.post("/chat/smart")
-async def chat_smart_stream(request: ChatRequest):
+async def chat_smart_stream(request: Request, chatRequest: ChatRequest):
+
+    uid = request.headers.get("uid")
+
+    if uid is None:
+        ## In actual way, i.e. API Gateway way it's not possible
+        raise HTTPException(status_code=400)
+
     """Smart streaming that adapts to message complexity"""
     
     async def generate_smart_stream():
@@ -49,12 +56,12 @@ async def chat_smart_stream(request: ChatRequest):
             
             # Process with smart streaming
 
-            async for chunk in chatbot.process_message_smart(request.user_id, request.message):
+            async for chunk in chatbot.process_message_smart(uid, chatRequest.message):
                 yield f"data: {json.dumps(chunk)}\n\n"
 
                 # Collect title for saving it in a conversation
                 if chunk.get("type") == "title":
-                    conversation_id = await db_manager.add_conversation(title, request.user_id, timestamp)
+                    conversation_id = await db_manager.add_conversation(title, uid, timestamp)
                 # Collect full response for saving
                 if chunk.get("type") == "response" and chunk.get("is_final"):
                     full_response = chunk.get("full_content", "")
@@ -90,7 +97,7 @@ async def chat_smart_stream(request: ChatRequest):
             #     ai_content=full_response,
             #     user_prompt=request.message,
             # )
-            chatPromptId = await db_manager.save_chat_prompt(conv_id=conversation_id, uid=request.user_id, user_prompt=request.message, ai_prompt=full_response, timestamp=timestamp)
+            chatPromptId = await db_manager.save_chat_prompt(conv_id=conversation_id, uid=uid, user_prompt=chatRequest.message, ai_prompt=full_response, timestamp=timestamp)
             yield f"data: {json.dumps({"chat_id": chatPromptId})}"
     
     return StreamingResponse(

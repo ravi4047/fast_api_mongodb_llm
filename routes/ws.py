@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket
 from utils.connection_manager import manager
-from main import chatbot
+from main_old import chatbot
 import json 
 
 router = APIRouter()

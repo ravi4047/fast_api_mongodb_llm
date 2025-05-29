@@ -3,6 +3,7 @@ from pymongo.asynchronous.database import AsyncDatabase
 from typing import Optional
 import logging
 from model.chat_prompt import ChatPrompt, Conversation
+from model.user_profile import UserProfile
 from fastapi import HTTPException
 from datetime import datetime
 
@@ -60,7 +61,7 @@ class DatabaseManager:
     def chat_prompts(self):
         if self.database is None:
             raise
-        return self.database["messages"]
+        return self.database["chat_prompts"]
 
     @property
     def messages(self):
@@ -145,7 +146,26 @@ class DatabaseManager:
             raise HTTPException(status_code=500)
     ## Conversation stuff ------------------------------------------------------------------ STOP --------------------
 
-    ## 
+    ## Profile stuff ----------- start --------------
+    async def get_user_profile(self, uid:str)->UserProfile:
+        try:
+            print("uid", uid)
+            # conv = Conversation(uid=user_id, title=title, timestamp=timestamp)
+            # conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
+            # result = await self.bot_conversations.insert_one(document=conv)
+            # return result.inserted_id
+            result = await self.profiles.find_one({"uid": uid})
+            # if result is None: # or
+            if not result: # 👉👉 That means none is treated as negative 
+                raise HTTPException(status_code=404, detail="Error in inserting conversation prompt {e}")
+            return result
+        except HTTPException as http_exc:
+            raise http_exc # Pass HTTP exceptions directly
+        ## 👉👉👉👉 This will return my exceptions i.e. 404 is None
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Error in fetching a user profile")
+    ## Profile stuff ----------- stop --------------
 
 
 # # Global instance

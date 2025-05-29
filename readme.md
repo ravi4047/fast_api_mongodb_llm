@@ -62,3 +62,5 @@ So, if they create on those, we will directly go to that subgraph (like the Indi
 
 
 
+#### Response
+As said by https://claude.ai/chat/65809e9e-d583-47e9-aea3-adfe9499d9a7, we are doing SSE (Server Side Events)

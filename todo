@@ -1,0 +1,9 @@
+[-]  28-05-25 02:35 Set the LLM response based on the response jsons.
+
+"_1":"How should I return these kinds of things. How will the client handle it either? Hmm client can handle it. It's just a simple programming.",
+    "_2":"Let's talk in server side. First Ravi, you think about it. Then ask the Claude about it.",
+    "_3": "Source is Gemini android one.",
+    "_4": "I think it needs version also",
+    "_5": "As far as I can think, It will simply instruct the agent prompt to output it based on this json format.",
+    "_6": "I will tell the Claude or AI to use your own creativity as this one is made up.",
+    "_7": "Also whether this approach using text or json which one is preferred. Use the most common or better one",

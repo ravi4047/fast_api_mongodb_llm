@@ -1,0 +1,80 @@
+{    
+    "_1":"How should I return these kinds of things. How will the client handle it either? Hmm client can handle it. It's just a simple programming.",
+    "_2":"Let's talk in server side. First Ravi, you think about it. Then ask the Claude about it.",
+    "_3": "Source is Gemini android one.",
+    "_4": "I think it needs version also",
+    "_5": "As far as I can think, It will simply instruct the agent prompt to output it based on this json format.",
+    "_6": "I will tell the Claude or AI to use your own creativity as this one is made up.",
+    "_7": "Also whether this approach using text or json which one is preferred. Use the most common or better one",
+
+    "promptId": "complex_prompt_001",
+    "timestamp": 1678887000000,
+    "version": 1,
+
+    "contentBlocks": [
+    {
+        "type": "header",
+        "data": {
+        "text": "Meet Our Talented Contributors!",
+        "level": 1
+        }
+    },
+    {
+        "type": "paragraph",
+        "data": {
+        "text": "We're excited to introduce you to the amazing individuals who make our platform great. Each one brings a unique set of skills and passion."
+        }
+    },
+    {
+        "type": "list",
+        "data": {
+        "listStyle": "custom_profile",
+        "items": [
+            {
+            "type": "profile_list_item",
+            "data": {
+                "profileId": "dev001",
+                "imageUrl": "https://example.com/dev001.png",
+                "name": "Sarah Chen",
+                "shortBio": "Lead Software Engineer",
+                "action": { "type": "navigate", "screenId": "profileDetailScreen", "arguments": {"userId": "dev001"} }
+            }
+            },
+            {
+            "type": "profile_list_item",
+            "data": {
+                "profileId": "design002",
+                "imageUrl": "https://example.com/design002.png",
+                "name": "Mike Rivera",
+                "shortBio": "UX/UI Design Lead",
+                "action": { "type": "navigate", "screenId": "profileDetailScreen", "arguments": {"userId": "design002"} }
+            }
+            },
+            {
+            "type": "profile_list_item",
+            "data": {
+                "profileId": "writer003",
+                "imageUrl": "https://example.com/writer003.png",
+                "name": "Aisha Khan",
+                "shortBio": "Content Strategist",
+                "action": { "type": "navigate", "screenId": "profileDetailScreen", "arguments": {"userId": "writer003"} }
+            }
+            }
+        ]
+        }
+    },
+    {
+        "type": "paragraph",
+        "data": {
+        "text": "Their combined expertise and dedication are the driving force behind our success. We encourage you to learn more about them by clicking on their profiles."
+        }
+    },
+    {
+        "type": "cta_button",
+        "data": {
+        "text": "Join Our Team!",
+        "action": { "type": "navigate", "screenId": "careersScreen", "arguments": {} }
+        }
+    }
+    ]
+}
