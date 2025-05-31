@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 # from dto.requests import PagingRequest
 # from dto.dtos import PagingRequestDto
 from model.chat_prompt import Conversation
-from main import chatbot, db_manager
+from main import chatbot, mdb_manager
 
 router = APIRouter()
 
@@ -14,6 +14,6 @@ async def paging_conversations(request: Request): #(dto: PagingRequestDto):
     page = int(request.query_params["page"]) # I need to cast str to int
     page_size = int(request.query_params["page_size"])
 
-    response = await db_manager.paging_conversations(uid, page, page_size)
+    response = await mdb_manager.paging_conversations(uid, page, page_size)
 
     return response

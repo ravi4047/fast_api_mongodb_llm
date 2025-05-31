@@ -87,6 +87,12 @@ class DatabaseManager:
             raise
         return self.database["bot_conversations"]
     
+    @property
+    def bio_maker(self):
+        if self.database is None:
+            raise
+        return self.database["bio_maker"]
+    
     ## Note, here we won't handle any object parameter or error. This is just for database operation. All error handling stuff 
     ## will be done in repository/controller/nodes/tools etc.
 
@@ -144,6 +150,17 @@ class DatabaseManager:
             return [Conversation(**conv) for conv in result]
         except Exception as e:
             raise HTTPException(status_code=500)
+        
+    async def get_conversation(self, conv_id:str)->Conversation:
+        try:
+            result = await self.bot_conversations.find_one({"_id":conv_id})
+            if not result:
+                raise HTTPException(status_code=404)
+            return result
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=500)
     ## Conversation stuff ------------------------------------------------------------------ STOP --------------------
 
     ## Profile stuff ----------- start --------------
@@ -162,11 +179,36 @@ class DatabaseManager:
         except HTTPException as http_exc:
             raise http_exc # Pass HTTP exceptions directly
         ## 👉👉👉👉 This will return my exceptions i.e. 404 is None
-
         except Exception as e:
             raise HTTPException(status_code=500, detail="Error in fetching a user profile")
+    
     ## Profile stuff ----------- stop --------------
 
+
+    ## Bio Maker --------------- start ------------
+    ## --> We need to save at 2 places. One inside bio maker collection and one update inside user profile.
+    ##👉👉👉 User profile update is more important here. Hence, I will bulk write. Bulk write only happens to same collection
+    ## Hence, do it separately. Transaction is not needed here.
+    async def save_bio_maker(self, uid: str, bio: str, user_description: str):
+        # Update profile (more important operation)
+        update_result = await self.profiles.update_one(
+            {"user_id": uid},
+            {"$set": {"bio": bio}},
+            # upsert=True  # Creates profile if not found
+            upsert=False
+        )
+
+        # Insert new bio document
+        bio_result = await self.bio_maker.insert_one({
+            "bio": bio,
+            "user_description": user_description
+        })
+
+        if update_result.modified_count or bio_result.inserted_id:
+            return {"message": "Profile updated & Bio added successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Update failed")
+    ## Bio Maker --------------- stop -------------
 
 # # Global instance
 # db_manager = DatabaseManager()

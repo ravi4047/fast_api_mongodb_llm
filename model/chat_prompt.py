@@ -35,6 +35,7 @@ class Conversation(BaseModel):
     title: str
     uid: str
     timestamp: datetime
+    long_term_memory: str ## This is for conversation.
 
     class Config:
         allow_population_by_field_name = True
@@ -44,7 +45,7 @@ class Conversation(BaseModel):
     @classmethod
     def create(cls, title:str, uid:str, timestamp: datetime):
         """Create and return a new ChatPrompt instance"""
-        return cls(_id=ObjectId(), title=title, uid=uid, timestamp=timestamp)
+        return cls(_id=ObjectId(), title=title, uid=uid, timestamp=timestamp, long_term_memory="")
 
 # 🤔🤔 When I try to import I only want ChatPrompt class to be exported not those which I have imported like BaseModel or datetime.
 #  How to make it private in fastapi

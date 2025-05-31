@@ -6,7 +6,7 @@ from typing import List
 from bio_maker.bio_enhancer import BioEnhancer
 from bio_maker.prompt import BioPromptGenerator
 from bio_maker.utils import ContentFilter
-from main import biobot, db_manager
+from main import biobot, mdb_manager
 from dto.requests import BioGenerationRequest, PostBio
 from responses import BioResponse
 
@@ -58,7 +58,7 @@ async def generate_bio(req: Request, request: BioGenerationRequest):
             raise HTTPException(status_code=400)
 
         # Get user profile
-        user_profile = await db_manager.get_user_profile(uid)
+        user_profile = await mdb_manager.get_user_profile(uid)
         
         # Check content safety
         safety_flags = ContentFilter.check_content_safety(request.user_description)
@@ -87,6 +87,11 @@ async def generate_bio(req: Request, request: BioGenerationRequest):
         
         # Log generation for monitoring
         logger.info(f"Bio generated for user {uid}, flags: {all_safety_flags}")
+
+        ## We will save at 2 places. One in bio profile and another one in bio_maker collection
+        await mdb_manager.save_bio_maker(uid, enhanced_bio, request.user_description)
+
+        ## 👉 TODO Should I ave safety flags and suggestions. I will think later
         
         return BioResponse(
             generated_bio=enhanced_bio,

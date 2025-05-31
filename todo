@@ -7,3 +7,20 @@
     "_5": "As far as I can think, It will simply instruct the agent prompt to output it based on this json format.",
     "_6": "I will tell the Claude or AI to use your own creativity as this one is made up.",
     "_7": "Also whether this approach using text or json which one is preferred. Use the most common or better one",
+
+
+
+29-05-25 🟧 - Implement rate limiting on bio or chatbot part.
+👉 - Actually if there I can't find any solution, I will switch to openai which has max tokens limit.
+https://stackoverflow.com/questions/65491184/ratelimit-in-fastapi
+
+
+16:13 29-05-25 Bio Maker done. Moving to match making
+    => Going to write match making all by myself.
+
+🟧 I will create a WhatsApp Like animation between different bots entry and exit.
+
+🟧 How should I design this conversation bot?
+👉 - Should I make it like help me now what next? Or should I take input or any user description from user?
+If that's the case, then I should ask every time, and don't need to introduce any character. Let the user only talk to me. In this way 
+it will be very user focused and more original to the thinking of the user.

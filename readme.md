@@ -64,3 +64,57 @@ So, if they create on those, we will directly go to that subgraph (like the Indi
 
 #### Response
 As said by https://claude.ai/chat/65809e9e-d583-47e9-aea3-adfe9499d9a7, we are doing SSE (Server Side Events)
+
+
+### Use case of Redis
+- For api rate limiting in fastapi_limiter library https://stackoverflow.com/questions/65491184/ratelimit-in-fastapi
+- Also for saving it in memory. I mean use as a MemorySaver.
+Actually if there I can't find any solution, I will switch to openai which has max tokens limit.
+
+
+### I am still finding something innovative.
+In the Dating App, I am able to create a good bio using LLM and also conversation
+
+But this is AI, people just don't want to work a lot and just needs AI to work on their behalf.
+
+### We will have a conversation bot. Actually we will having different bots for different purposes.
+- Related to conversation bots
+    - There will be various characters
+    - Like Alex - Who likes to build trust by staying grounded.
+    - Like Adam - Who is quite flirty and who is quite willing to risk it all.
+    - etc. You can build custom ones also.
+    - People can build animals type too. (Maybe funny) Like seen in character.ai. (Now this is interesting)
+
+#### Level of Hardness of Bots
+- Matchmaking one - Hard
+- Conversation one - Medium
+- Bio one - Easy
+- Personal bot - Conveys about your app.
+
+**If user asks anything irrelevant then you may say that Sorry I am subjected to help you based on the given criteria. You may take help of other bos like Conversation one - To help you related to interaction, Personal bot - Which talks related to your profile, Bio bot - Which is responsible for creating a bio for you**
+
+*I mean any relationship advice, it can ask with normal chatgpt also. Why waste time and money on that? So I am done. I undertsood that we will be creating different bots.*
+
+Ok so I will build this conversation one.
+
+
+##### So it means the MatchMaking one is the most difficult one. I should be very cautious also how to create that.
+
+### Ravi, focus on making good softwares. Don't over complicate yourself. Three bots are enough.
+> You have focused on privacy, right. And personal stuff. There is a difference between dating app and social media.
+
+### TODO After thinking a lot, I will now focus on these 3 bots only at initial phase.
+https://chatgpt.com/c/6838a5ef-9088-800d-9be3-a7446720c13c
+
+👉 Later, If I want to build more stuff like AI Coaching to interact with women etc, I will build it.
+
+👉 But AI Coaching looks lot like a spoon feeding.
+
+### 👉 I need to make them addicted. So, I would need free version + upgrade version.
+
+
+### 🔁 Overview of Personal Cloning stack
+Model Type	Purpose
+Base Model	Chat generation: understands context, produces answers in your style
+Embedding Model	Finds relevant past conversations / behaviors (memory + style recall)
+Sentiment/Emotion Model	Analyzes emotional content of messages for empathy & style cloning

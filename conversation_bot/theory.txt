@@ -1,0 +1,59 @@
+Ravi This needs a good Engineering.
+
+I was planning to fetch chat messages from dynamodb
+But no good. If you have more than 100's of chat messages.
+
+Hence, I think you should save the summary/conclusion somewhere.  In the embedding I guess. No not in the embedding, but by 
+using LLM just getting a short summary and saving it.
+
+My job is to understand and tell what to do next. I may give suggestion of how you wrote, may mean something else and how you should 
+write instead. While doing that, my main focus is writing the best next sentence. The conversation bot has many flavors. Right now,
+it's alex whose job is to go for a date while talking grounded conversation for building trust.
+-> How will I build that?
+-> Main trouble is say 100s of chat messages. How will you do that?
+https://chatgpt.com/c/6838b3dc-ad60-800d-a54f-0f4bd5e114ca
+✅ Solution: Use Long Term and short term memory
+    - Long Term - for overall memory
+    - Short term - for N(last 10-20) raw messages
+
+🤔 But again the question is? How?
+    - I think if the user keeps it's AI feature on - And select a conversation - And selects a bot - Then we will say wait a minute - 
+    - Configuring your messages - Then we will come to a conclusion and so on.
+
+
+    But let's say for 50 messages - It's good. But ...
+    ✅ Ok understood - We will fetch last 100 messages. We will get the conclusion of every 20 messages or more better by word count.
+    We will set the limit.
+    - We will conclude that using LLM and store it in Long term memory.
+    - 🤔 But I am saving it in dynamodb.
+        - I don't want long term memory to be saved there, but. But what!.
+        🤔 Is there any use of Pinecone, vector search database here. I don't think so.
+        - So what shall I do?
+            - So you will be saving chat messages in dynamodb. Yeah, for quick saving.
+                - So while LLM fetching, we will generate last 10-20 messages from dynamodb and mongodb long term message and your 
+                AI answers/or your answers + your partner as well
+
+👉👉 Note, by default, conversation bot main uses it to help it in next chat. But I will be providing user description also. So, it's the 
+user who will ask what should the AI do instead. Yes, now it's more fruitful for AI to step in. 
+Especially the females who will ask:- Shall I trust this person? How to win her trust etc?? And based on the conversation I will be answering 
+all the stuff.
+
+👉👉👉 I need to make them addicted. So, I would need free version + upgrade version.
+
+🤔🤔 Now my next and final doubt is the use of vector search i.e. memory checkpointer in langgraph. What's really it's purpose?
+-> Memory is used to mix 2 different conversations. But in my case it should be private right!.
+
+-> -> -> Using Memory I can create my own model. Right!! The way I interact. My chat messages could make me my own model/clone.
+
+-->> In the future, I will tell them to create your own model.
+    There would be some conditions for that - 
+        - He has interacted in atleast 40-50 chats.
+        I will ask about it's future
+            - Like Legacy MatchMaking https://chatgpt.com/c/68384a57-f060-800d-b876-7fe8a32d12c5 - What are your future plans or so?
+
+🤔 But Ravi, if you are trying to fetch things from mongodb and dynamodb only, then what's the use of LangChain Conversational Memory 
+or LangGraph short term memory stuff.
+✅ Got the checkpointer memory solution.
+https://chatgpt.com/c/6839bac0-8960-800d-82ae-bad7d56970aa
+👉After interacting with a lot, I understood that this checkpointer memory one is not for me.
+It's for you and AI, but mine is you and my partner and only the chatbot is coming in between to give you some advice just.

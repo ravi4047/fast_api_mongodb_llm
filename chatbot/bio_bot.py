@@ -5,7 +5,7 @@
 
 from typing import List, AsyncGenerator, Dict, Any
 from dto.requests import BioGenerationRequest
-from main import db_manager
+from main import mdb_manager
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import os
 from langchain_groq import ChatGroq
@@ -83,27 +83,27 @@ class BioBot:
     #         }
 
     ### -->>> This was a nice code I wrong. Unfortunately not better enough ----------- start
-    async def run_bio_maker(self, uid: str, input:str)->BioMakerResponse:
-        profile = await db_manager.get_user_profile(uid)
-        print(profile.model_dump_json())        
+    # async def run_bio_maker(self, uid: str, input:str)->BioMakerResponse:
+    #     profile = await db_manager.get_user_profile(uid)
+    #     print(profile.model_dump_json())
 
-        messages = [
-            # 👉 For BioPrompt, I still need Claude support to nicely frame it for me. Note this time, you are not using LangGraph.
-            # 👉👉 https://claude.ai/chat/537f692e-323c-43ad-9c43-fc5e17f416f8 Simply Wow !!!!!!!!!
-            SystemMessage(BIO_PROMPT, profile=profile),
-            HumanMessage(input)
-        ]
+    #     messages = [
+    #         # 👉 For BioPrompt, I still need Claude support to nicely frame it for me. Note this time, you are not using LangGraph.
+    #         # 👉👉 https://claude.ai/chat/537f692e-323c-43ad-9c43-fc5e17f416f8 Simply Wow !!!!!!!!!
+    #         SystemMessage(BIO_PROMPT, profile=profile),
+    #         HumanMessage(input)
+    #     ]
 
-        try:
-            response = await self.llm.ainvoke(messages) ## 👉 I am not interested in streaming the bio part.
-            ## 👉 Also adding too many options in bio part (like romantic, marriage, casual etc is too much / useless) as user can write 
-            ## in almost infine ways now using LLM.
-            print(response)
+    #     try:
+    #         response = await self.llm.ainvoke(messages) ## 👉 I am not interested in streaming the bio part.
+    #         ## 👉 Also adding too many options in bio part (like romantic, marriage, casual etc is too much / useless) as user can write 
+    #         ## in almost infine ways now using LLM.
+    #         print(response)
 
-            return BioMakerResponse({"type":"response", "content": response.content.__str__()})
-        except Exception as e:
-            print(e)
-            return BioMakerResponse({"type":"error", "content": "Error. Please try again!"})
+    #         return BioMakerResponse({"type":"response", "content": response.content.__str__()})
+    #     except Exception as e:
+    #         print(e)
+    #         return BioMakerResponse({"type":"error", "content": "Error. Please try again!"})
     ### This was a nice code I wrong. Unfortunately not better enough ----------- stop
 
     ### 👉 Note, the thing is I don't know how to setup max tokens in ChatGroq one. In open api one, I know, but not here. I don't know why
@@ -112,4 +112,3 @@ class BioBot:
         response = await self.llm.ainvoke(prompt)
         return response.content.__str__()
 
-    

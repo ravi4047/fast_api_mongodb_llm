@@ -1,0 +1,2 @@
+class GraphState:
+    pass

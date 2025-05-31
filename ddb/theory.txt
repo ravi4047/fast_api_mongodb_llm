@@ -1,0 +1,24 @@
+👉👉 https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html -> This is very much helpful.
+
+
+Boto3 theory
+
+Main problem - 
+-----------------------------------------
+import boto3
+
+# Get the service resource.
+dynamodb = boto3.resource('dynamodb')
+
+# Create the DynamoDB table.
+table = dynamodb.create_table(  # This create
+-----------------------------------------
+
+❌ create_table is showing error.
+
+Actually there is no type casting of boto3. Hence, we use boto3-stubs-full for that
+https://pypi.org/project/boto3-stubs-full/
+
+boto3 - not installing
+
+I am not installing boto3-stubs-full. I am using boto3-stubs[dynamodb]

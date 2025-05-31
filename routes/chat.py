@@ -8,7 +8,7 @@ from pymongo.collection import Collection
 
 from dto.chat_request_dto import ChatRequest
 
-from main import db_manager
+from main import mdb_manager
 
 router = APIRouter()
 
@@ -49,6 +49,6 @@ async def paging_chats(request: Request):
     page = int(request.query_params["page"]) # I need to cast str to int
     page_size = int(request.query_params["page_size"])
 
-    response = await db_manager.paging_chat_prompts(uid, page, page_size)
+    response = await mdb_manager.paging_chat_prompts(uid, page, page_size)
 
     return response
