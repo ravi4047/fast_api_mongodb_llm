@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 # from routes.conversations import router as convRouter
 # from routes.chat import router as chatRouter
 # from routes.bio_maker import router as bioRouter
+from llm.llm import setup_emotion_classifier, setup_emotion_sentiments, setup_slm_azure
+from persona_cloning.emotion_handler import EmotionHandler
 from routes import bio_maker, chat, conversations
 from mdb.db_manager import DatabaseManager
 from ddb.ddb_manager import Dynamo_Manager
@@ -16,6 +18,8 @@ from boto3.resources.base import ServiceResource
 from boto3.dynamodb.table import TableResource
 
 import boto3
+
+from transformers.pipelines import pipeline
 
 # dynamodb = boto3.resource("dynamodb")
 # table = dynamodb.Table("users")  # Correct way to reference an existing table
@@ -36,10 +40,42 @@ biobot = None
 mdb_manager = DatabaseManager()
 ddb_manager = None
 
+# phi4_azure = None
+slm = None
+
 # # DynamoDB setup
 # import boto3
 
+# https://chatgpt.com/c/683cc494-9ad0-800d-8864-06efe6c9d592
+## Asked chatgpt to select the best one for getting quick emotions and he did this. It covers 7 emotions
+# j-hartmann/emotion-english-distilroberta-base https://huggingface.co/j-hartmann/emotion-english-distilroberta-base
+# anger 🤬
+# disgust 🤢
+# fear 😨
+# joy 😀
+# neutral 😐
+# sadness 😭
+# surprise 😲
+# emotion_classifier =  pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
+# emotion_classifier = None
+# emotion_sentiments = None
+emotion_handler = None
+### Only 7 emotions are not enough. This is an Emotion handling chatbot. So, I think I should go to GoEmotion
 
+## `Do you know how much I love you. If you won't love me, I will kill myself. Don't you ever force me to be there. I will hate you forever if that happened`
+# -> Due to this line, I was like let's focus on the emotions on a more better way.
+# emotion_classifier = pipeline(task="text-classification", model="SamLowe/roberta-base-go_emotions", top_k=None)
+
+# sentences = ["I am not having a great day"]
+
+# model_outputs = emotion_classifier(sentences)
+# print(model_outputs)
+
+# print(model_outputs[0])
+
+## 
+
+# produces a list of dicts for each of the labels
 
 # ddd = boto3.resource("dynamodb")
 
@@ -94,16 +130,31 @@ async def lifespan(app:FastAPI):
             raise
 
         await mdb_manager.connect(MONGODB_URI, DB_NAME)
+
         
         # await ddb_manager.initialize_db()
         global ddb_manager
         ddb_manager = Dynamo_Manager()
+
+        global emotion_classifier
+        emotion_classifier = setup_emotion_classifier()
+
+        global emotion_sentiments
+        emotion_sentiments = setup_emotion_sentiments()
+
+        global emotion_handler
+        emotion_handler = EmotionHandler()
 
         global chatbot
         chatbot =  SmartStreamingChatbot(mdb_manager, "")
 
         global biobot
         biobot = BioBot()
+
+        # global phi4_azure
+        # phi4_azure = setup_phi4_azure()
+        global slm
+        slm = setup_slm_azure()
 
         logger.info("Application startup completed")
         yield

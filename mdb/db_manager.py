@@ -93,6 +93,18 @@ class DatabaseManager:
             raise
         return self.database["bio_maker"]
     
+    @property
+    def persona_profile(self):
+        if self.database is None:
+            raise
+        return self.database["persona_profile"]
+    
+    @property
+    def persona_conversations(self):
+        if self.database is None:
+            raise
+        return self.database["persona_conversations"]
+
     ## Note, here we won't handle any object parameter or error. This is just for database operation. All error handling stuff 
     ## will be done in repository/controller/nodes/tools etc.
 
@@ -209,6 +221,27 @@ class DatabaseManager:
         else:
             raise HTTPException(status_code=500, detail="Update failed")
     ## Bio Maker --------------- stop -------------
+
+    ## Persona profile ---------- start
+    async def get_persona_profile(self, user_id: str):
+        persona_prf = await self.persona_profile.find_one(filter={"uid": user_id})
+        return persona_prf
+    ## Persona profile ---------- stop
+
+    ## Persona conversations ---------- start
+    async def get_persona_conversations(self, user_id: str, page: int, per_page: int):
+        skip = (page - 1) * per_page
+        result = await self.persona_conversations.find({"uid": user_id}).skip(skip).limit(per_page).to_list()
+        return [Conversation(**conv) for conv in result]
+
+    async def update_persona_conversation(self, user_id: str, title: str, timestamp: datetime):
+        """Update existing persona conversation or create a new one."""
+        try:
+            conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
+            result = await self.persona_conversations.update_one({"uid": user_id}, {"$set": conv}, upsert=True)
+            return result.upserted_id
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Error in updating persona conversation {e}")
 
 # # Global instance
 # db_manager = DatabaseManager()

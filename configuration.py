@@ -29,3 +29,8 @@ MATCHES_COLLECTION = "matches"
 MESSAGES_COLLECTION = "messages"
 CHAT_HISTORY_COLLECTION = "chat_history"
 FEEDS_HISTORY_COLLECTION = "feeds_history"
+
+# Azure OpenAI settings
+AZURE_OPENAI_ENDPOINT="azure-openai"
+AZURE_OPENAI_API_KEY="azure-openai-api-key"
+AZURE_OPENAI_DEPLOYMENT_NAME="azure-openai-deployment-name"

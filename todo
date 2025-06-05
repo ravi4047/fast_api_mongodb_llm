@@ -24,3 +24,10 @@ https://stackoverflow.com/questions/65491184/ratelimit-in-fastapi
 👉 - Should I make it like help me now what next? Or should I take input or any user description from user?
 If that's the case, then I should ask every time, and don't need to introduce any character. Let the user only talk to me. In this way 
 it will be very user focused and more original to the thinking of the user.
+
+
+<!-- analyze_user_dominant_traits
+determine_user_type
+select_optimal_growth_catalyst -->
+
+analyze_message_traits

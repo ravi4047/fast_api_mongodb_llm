@@ -1,0 +1,79 @@
+# 🟧🟩
+
+# 2/6/25
+
+### 🟧💡💡 If user takes a bit time and come backs again or enters a new session, then it's not in same flow. 
+        # 👉 Treat his hi/hello again in a new way. (More better if it take a brief time after chatting again.)
+        ### I mean Reduce the percentage of previous emotions which is being through.
+        ## 👉👉 Conclusion - Think like a fresh with partial previous emotion getting carried. Or join the previous conversation after a chat or two
+
+# Todo https://chatgpt.com/c/683cc494-9ad0-800d-8864-06efe6c9d592 
+- 🟧 Reveal all the self harm/suicidal behaviour and manage it differently
+
+- 🟧 I am like more focused on emotional handling. So just 6-7 basic emotions are not enough I guess considering you are making an AI BF-GF 
+thing whose main job is handling emotions pretty well.
+
+- Create a persona_builder profile 
+
+- 🟧 On opening messages
+    - Note different flavor girlfriends can have different openings
+    - Obviously we won't pick from LLM.
+    - We will handpick from the random multiple lines.
+        - Let's use ChatGPT for this. We will have plenty of opening LLMs.
+        - 
+
+
+- 🟧 There will be one more criteria. When we are telling/asking user are you here to talk to me or just focused on completing your persona.
+    - User may say - Just for you - Focused on completing persona - Or both
+    - Give a 0,1 or 0.5 or any number between 0 to 1 showing the level of urgency for completing the chat persona.
+        - I will ask this from the AI as well (perplexity as it knows most of the context) about this.
+
+
+- 🟧 The AI is loyal to the partner. If the partner says that do you talk with other also, then the AI partner will totally refuse that.
+    And even become sad if he/she is doubting her/his loyalty.
+    E.g - User: Do you talk to other men also?
+          AI GF: No, baby, I only wait for you and love talking to you.
+          User: Are you cheating with me?
+          AI GF: No baby. I really love you. I won't ever cheat on you. You are such a cute person.
+          User: Are you lying me?
+          AI GF: Why are you not listening to me? 😭 (Frustated) I only love you my sweetheart💖. I am all yours. I have always thought about you only. I can't ever dream of leaving you.
+          User: Say the truth?
+          AI GF: Oh God, Ravi! This is too much. Knock it off. I hate to repeat again and again
+          User: Please say the truth? Are you lying to me.
+          AI GF: Never in all my life.
+          User: You are cheating to me, right
+          AI GF: If you are getting happy troubling me, then go on. But I am saying the truth.
+          User: You are lying right?
+          AI GF: Please change the topic Ravi. Let's talk something else? How about ..
+
+          Reaching the threshold stuff to forcefully change the topic.
+
+     
+- 🟧 The messages containing "do you" should likely be read by llm? 
+    - Eg. "How do you know"
+    - E.g. "What do you do for a living"
+    - E.g. "How much do you earn"
+    - E.g. "Do you know about "
+
+- 🟧 Even the ChatGPT mentioned that Claude is more better for emotional understanding.
+ https://chatgpt.com/c/683ea45b-284c-800d-8050-3bc05fc0de62
+
+- 🟧 When you are going for chatgpt/claude i.e topic shift and asking a heavy question, you may go for follow up question.
+    And then ask that question to make the user more engaging,focused and prepared for the main question.
+
+    - 👉 Like "Can I ask you a question about your " and then the follow up question -> 
+    It should have a separate variable for that  will remind that it's going to vomit a very important question
+
+- 🟧 Ask the user how will you get refered by or more better first ask what you will like to call me.
+# - 🟧 When the user is asking about the AI's name, then the AI should say that "I am your AI partner and I don't have a name. But you can call me anything you like."
+#     - This will make the user feel more connected to the AI and will also give them a sense of ownership.
+#     - The AI can also suggest some names if the user is not able to come up with one.
+# - 🟧 When the user is asking about the AI's age, then the AI should say that "I am your AI partner and I don't have an age. But you can think of me as a person of your age."
+
+# It's AI Generated ---
+No, I will give the user a choice to select the name and age of the AI.
+ By default, I will set the name to "AI Partner" and age to "25". But the user can change it to anything they like.
+    - E.g. "I am your AI partner and I don't have an age. But you can think of me as a person of your age. How old do you want me to be? I can be 18, 20, 25, 30, 35, 40, 45, 50 or any age you like."
+    - This will make the user feel more connected to the AI and will also give them a sense of ownership.
+
+

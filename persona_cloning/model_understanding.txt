@@ -1,0 +1,29 @@
+j-hartmann/emotion-english-distilroberta-base
+https://huggingface.co/j-hartmann/emotion-english-distilroberta-base
+📣 Useful points:
+    1. This model is suitable for English.
+    2. 1,574,396 downloads/month
+    With this model, you can classify emotions in English text data. The model was trained on 6 diverse datasets (see Appendix below) and predicts Ekman's 6 basic emotions, plus a neutral class:
+    anger 🤬
+    disgust 🤢
+    fear 😨
+    joy 😀
+    neutral 😐
+    sadness 😭
+    surprise 😲
+
+cardiffnlp/twitter-roberta-base-sentiment-latest
+URL:- https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest
+📣 Useful points:
+    1. This model is suitable for English.
+    2. 2,561,650 downloads/month
+
+SamLowe/roberta-base-go_emotions
+URL: https://huggingface.co/SamLowe/roberta-base-go_emotions
+📣 Useful points:
+    1. This model is suitable for English.
+    2. 603,981 downloads/month
+
+- There is a problem with GoEmotions but. Imagine the emotion is caring. But to be honest, this is what that emotion reveals from the 
+sentence. And not the flow of the emotion which he is speaking those messages. I think that should also count. Hence, I am little confused 
+now. What shall I pick?
