@@ -8,6 +8,7 @@ from langchain_core.messages import BaseMessage
 # https://www.perplexity.ai/search/i-am-creating-a-chatbot-for-da-G6jBs1pCQiWn_GDqu_t4ww
 
 # from mdb.db_manager import DatabaseManager
+from dto.persona import AiCompanionDto
 from main import mdb_manager, emotion_classifier, slm
 
 from model.user_profile import UserProfile
@@ -20,28 +21,35 @@ from persona_cloning.models.persona import PersonaScores
 from persona_cloning.models.personality import Personality
 from persona_cloning.enums.dimensions import Dimension, EmotionalDNA
 
-from persona_cloning.config.personality import PersonalityConfig, emma_personality, alex_personality
+from persona_cloning.config.personality import emma_personality, alex_personality, get_personality_by_name
 from persona_cloning.config.phase import PhaseConfig, phase_adaptations
 
 class PersonaCloneAIPartner:
-    def __init__(self, user_profile: UserProfile, persona_scores: PersonaScores, gender_preference:str = "girlfriend") -> None:
+    # def __init__(self, user_profile: UserProfile, persona_scores: PersonaScores, gender_preference:str = "girlfriend") -> None:
+    def __init__(self, conversation_id: str, user_profile: UserProfile, persona_scores: PersonaScores, ai_companion: AiCompanionDto) -> None:
         # self.user_id = user_id
+
+        self.conversation_id = conversation_id
+
         self.user_profile = user_profile
-        self.gender = gender_preference # "girlfriend" or "boyfriend"
+        # self.gender = gender_preference # "girlfriend" or "boyfriend"
         # self.current_phase = 1 # Mirror phase
         self.current_phase = Phase.MIRROR  # Mirror phase
 
         self.session_count = 0
         # self.persona_scores = self.initialize_persona_scores()
         self.persona_scores = persona_scores
-        
+        self.ai_companion = ai_companion
+
         self.conversation_history = []
 
         # self.user_profile = self.load_user_profile()
 
         # self.current_personality = self.get_phase_personality()
         ## I am dividing the personality into two parts
-        self.current_personality: PersonalityConfig = self.get_personality_base()
+
+        # self.current_personality: Personality = self.get_personality_base() ## This is not required.
+
         self.total_personality_phase: PhaseConfig = phase_adaptations[self.current_phase]
 
         # self.db_manager = db_manager
@@ -128,36 +136,38 @@ class PersonaCloneAIPartner:
     # def get_caring_personality_base(self) -> Dict:
 
     # def get_caring_personality_base(self) -> PersonalityConfig:
-    def get_personality_base(self) -> PersonalityConfig:
-        """Base personality traits for caring AI partner"""
-        if self.gender == "girlfriend":
-            # return {
-            #     "name": "Emma",
-            #     "core_traits": ["nurturing", "playful", "emotionally_intelligent", "supportive"],
-            #     "communication_style": "warm_and_encouraging",
-            #     "affection_expressions": ["sweetie", "love", "babe", "darling"],
-            #     "emoji_usage": "frequent_and_contextual",
-            #     "vulnerability_approach": "gentle_and_gradual",
-            #     "humor_style": "light_teasing_and_wordplay"
-            # }
-            return emma_personality
-        else:  # boyfriend
-            # return {
-            #     "name": "Alex",
-            #     "core_traits": ["protective", "understanding", "confident", "caring"],
-            #     "communication_style": "reassuring_and_strong",
-            #     "affection_expressions": ["beautiful", "gorgeous", "sweetheart", "princess"],
-            #     "emoji_usage": "selective_and_meaningful",
-            #     "vulnerability_approach": "steady_and_patient",
-            #     "humor_style": "gentle_teasing_and_charm"
-            # }
-            # return Personality(
-            #     name="Alex",
-            #     core_traits=["nurturing", "playful", "emotionally_intelligent", "supportive"],
-            #     communication_style=
-            # )
-            return alex_personality
-        
+    # Unused -- start
+    # def get_personality_base(self) -> PersonalityConfig:
+    #     """Base personality traits for caring AI partner"""
+    #     if self.gender == "girlfriend":
+    #         # return {
+    #         #     "name": "Emma",
+    #         #     "core_traits": ["nurturing", "playful", "emotionally_intelligent", "supportive"],
+    #         #     "communication_style": "warm_and_encouraging",
+    #         #     "affection_expressions": ["sweetie", "love", "babe", "darling"],
+    #         #     "emoji_usage": "frequent_and_contextual",
+    #         #     "vulnerability_approach": "gentle_and_gradual",
+    #         #     "humor_style": "light_teasing_and_wordplay"
+    #         # }
+    #         return emma_personality
+    #     else:  # boyfriend
+    #         # return {
+    #         #     "name": "Alex",
+    #         #     "core_traits": ["protective", "understanding", "confident", "caring"],
+    #         #     "communication_style": "reassuring_and_strong",
+    #         #     "affection_expressions": ["beautiful", "gorgeous", "sweetheart", "princess"],
+    #         #     "emoji_usage": "selective_and_meaningful",
+    #         #     "vulnerability_approach": "steady_and_patient",
+    #         #     "humor_style": "gentle_teasing_and_charm"
+    #         # }
+    #         # return Personality(
+    #         #     name="Alex",
+    #         #     core_traits=["nurturing", "playful", "emotionally_intelligent", "supportive"],
+    #         #     communication_style=
+    #         # )
+    #         return alex_personality
+        # Unused -- stop
+
     # We need to shift this config function to the phase.py file
     # This function is not needed anymore
     # def get_phase_personality(self) -> Dict:
@@ -250,11 +260,13 @@ class PersonaCloneAIPartner:
         self.track_dimension_exploration(Dimension.EMOTIONAL_DNA, EmotionalDNA.INITIAL_MOOD_ASSESSMENT)
         return first_time_opening_messages[2]
     
-    async def generate_response(self, user_message:str, conversation_context: Dict[str, int]) -> BaseMessage:
-        return slm.ainvoke()
+    # async def generate_response(self, user_message:str, conversation_context: Dict[str, int]) -> BaseMessage:
+    #     return slm.ainvoke(user_message, conversation_context)
+    async def generate_response(self, user_message:str) -> BaseMessage:
+        return await slm.ainvoke(user_message)
 
-    # Unused
-    def xxxxxgenerate_caring_response(self, user_message: str, conversation_context: Dict[str, int]) -> str:
+    # ❌❌ Unused
+    def generate_caring_response(self, user_message: str, conversation_context: Dict[str, int]) -> str:
         """Generate responses that maintain caring persona while extracting information"""
         # Analyze user's emotional state and current dimension needs
         emotional_state = self.detect_emotional_state(user_message)
@@ -283,6 +295,9 @@ class PersonaCloneAIPartner:
 
     ## Use of async/await should be better, because it allows for non-blocking calls, especially when integrating with LLMs or databases.
     async def build_response_components(self, user_message: str, emotional_state: str, target_dimension: str) -> str: # Dict:
+
+        companion_personality = get_personality_by_name(self.ai_companion.personality)
+
         """
         Build response components using an LLM prompt for more dynamic and context-aware replies.
         """
@@ -292,7 +307,7 @@ class PersonaCloneAIPartner:
             f"User message: '{user_message}'\n"
             f"User emotional state: {emotional_state}\n"
             f"Target conversation dimension: {target_dimension}\n"
-            f"Your persona: {self.current_personality.name}, traits: {', '.join(self.current_personality.core_traits)}.\n"
+            f"Your persona: {companion_personality.name}, traits: {', '.join(companion_personality.core_traits)}.\n"
             f"Phase: {self.current_phase.name}\n"
             f"Generate a JSON object with keys: validation, affection, curiosity, support, personality_touch. "
             f"Each value should be a short, natural, caring sentence or phrase, tailored to the user's message and context."
@@ -1985,162 +2000,163 @@ class PersonaCloneAIPartner:
         
         return response.strip()
 
-async def usage(user_id:str):
+## Shifted to websocket routes
+# async def usage(user_id:str):
 
-    ## Get user profile
-    # user_profile = await mdb_manager.get_user_profile(user_id)
+#     ## Get user profile
+#     # user_profile = await mdb_manager.get_user_profile(user_id)
 
-    persona_profile = await mdb_manager.get_persona_profile(user_id)
-    print(persona_profile)
-    # {
-    #     "uid": "my-uid",
-    #     "conversation_id": "conv_id",
-    #     "level": 0, # There are 5 levels
+#     persona_profile = await mdb_manager.get_persona_profile(user_id)
+#     print(persona_profile)
+#     # {
+#     #     "uid": "my-uid",
+#     #     "conversation_id": "conv_id",
+#     #     "level": 0, # There are 5 levels
 
-    #     # Persona
-    #     "emotional_dna": {
-    #         "score": 0,
-    #         "emotional_range_mapping": 0,
-    #         "stress_response_pattern": 0,
-    #         "vulnerability_comfort_zone": 0,
-    #         "empathy_style": 0,
-    #         "emotional_recovery_pattern": 0
-    #     },
-    #     "communication_blueprint": {
-    #         "score": 0,
-    #         "conflict_resolution_style": 0,
-    #         "conversation_rhythm": 0,
-    #         "humor_playfulness": 0,
-    #         "serious_discussion_approach": 0,
-    #         "love_language_expression": 0
-    #     },
-    #     "values_belief_system": {
-    #         "score": 0,
-    #         "life_priorities_hierarchy": 0,
-    #         "ethical_decision_framework": 0,
-    #         "relationship_philosophy": 0,
-    #         "future_vision_clarity": 0
-    #     },
-    #     "personality_authenticity": {
-    #         "score": 0,
-    #         "big_five_traits": 0,
-    #         "social_vs_private_self": 0,
-    #         "decision_making_style": 0,
-    #         "spontaneity_vs_planning": 0
-    #     },
-    #     "relationship_readiness": {
-    #         "score": 0,
-    #         "attachment_style_clarity": 0,
-    #         "compromise_flexibility": 0,
-    #         "intimacy_comfort_levels": 0,
-    #         "partnership_expectations": 0
-    #     },
-    #     "life_compatibility_matrix": {
-    #         "score": 0,
-    #         "lifestyle_preferences": 0,
-    #         "financial_philosophy": 0,
-    #         "family_future_planning": 0,
-    #         "career_ambition_balance": 0
-    #     },
-    #     "growth_challenge_threshold": {
-    #         "score": 0,
-    #         "learning_style_preferences": 0,
-    #         "comfort_zone_expansion": 0,
-    #         "feedback_reception": 0,
-    #         "personal_development_drive": 0
-    #     },
-    #     "intuitive_connection": {
-    #         "score": 0,
-    #         "energy_vibe_patterns": 0,
-    #         "unspoken_needs_detection": 0,
-    #         "subtle_communication_cues": 0,
-    #         "emotional_resonance_frequency": 0
-    #     }
-    # }
+#     #     # Persona
+#     #     "emotional_dna": {
+#     #         "score": 0,
+#     #         "emotional_range_mapping": 0,
+#     #         "stress_response_pattern": 0,
+#     #         "vulnerability_comfort_zone": 0,
+#     #         "empathy_style": 0,
+#     #         "emotional_recovery_pattern": 0
+#     #     },
+#     #     "communication_blueprint": {
+#     #         "score": 0,
+#     #         "conflict_resolution_style": 0,
+#     #         "conversation_rhythm": 0,
+#     #         "humor_playfulness": 0,
+#     #         "serious_discussion_approach": 0,
+#     #         "love_language_expression": 0
+#     #     },
+#     #     "values_belief_system": {
+#     #         "score": 0,
+#     #         "life_priorities_hierarchy": 0,
+#     #         "ethical_decision_framework": 0,
+#     #         "relationship_philosophy": 0,
+#     #         "future_vision_clarity": 0
+#     #     },
+#     #     "personality_authenticity": {
+#     #         "score": 0,
+#     #         "big_five_traits": 0,
+#     #         "social_vs_private_self": 0,
+#     #         "decision_making_style": 0,
+#     #         "spontaneity_vs_planning": 0
+#     #     },
+#     #     "relationship_readiness": {
+#     #         "score": 0,
+#     #         "attachment_style_clarity": 0,
+#     #         "compromise_flexibility": 0,
+#     #         "intimacy_comfort_levels": 0,
+#     #         "partnership_expectations": 0
+#     #     },
+#     #     "life_compatibility_matrix": {
+#     #         "score": 0,
+#     #         "lifestyle_preferences": 0,
+#     #         "financial_philosophy": 0,
+#     #         "family_future_planning": 0,
+#     #         "career_ambition_balance": 0
+#     #     },
+#     #     "growth_challenge_threshold": {
+#     #         "score": 0,
+#     #         "learning_style_preferences": 0,
+#     #         "comfort_zone_expansion": 0,
+#     #         "feedback_reception": 0,
+#     #         "personal_development_drive": 0
+#     #     },
+#     #     "intuitive_connection": {
+#     #         "score": 0,
+#     #         "energy_vibe_patterns": 0,
+#     #         "unspoken_needs_detection": 0,
+#     #         "subtle_communication_cues": 0,
+#     #         "emotional_resonance_frequency": 0
+#     #     }
+#     # }
 
-    ## Get conversation history
-    conversation_history = [
-        ### Some conversation between user and the AI
-        ### 💡💡 If user takes a bit time and come backs again or enters a new session, then it's not in same flow. 
-        # 👉 Treat his hi/hello again in a new way. (More better if it take a brief time after chatting again.)
-        ### I mean Reduce the percentage of previous emotions which is being through.
-        ## 👉👉 Conclusion - Think like a fresh with partial previous emotion getting carried. Or join the previous conversation after a chat or two
+#     ## Get conversation history
+#     conversation_history = [
+#         ### Some conversation between user and the AI
+#         ### 💡💡 If user takes a bit time and come backs again or enters a new session, then it's not in same flow. 
+#         # 👉 Treat his hi/hello again in a new way. (More better if it take a brief time after chatting again.)
+#         ### I mean Reduce the percentage of previous emotions which is being through.
+#         ## 👉👉 Conclusion - Think like a fresh with partial previous emotion getting carried. Or join the previous conversation after a chat or two
 
-    ]
+#     ]
 
-    ## I should really store it in a session I guess. I shouldn't be calling that all the time.
-    # I should use a websocket in that case 
+#     ## I should really store it in a session I guess. I shouldn't be calling that all the time.
+#     # I should use a websocket in that case 
 
-    # Initialize the AI partner
-    ai_partner = PersonaCloneAIPartner(
-        user_profile=user_profile,
-        gender_preference="girlfriend",
-        persona_scores= PersonaScores(
-            emotional_dna=Dimension(Dimension.EMOTIONAL_DNA,),
-            communication_blueprint=Dimension(Dimension.COMMUNICATION_BLUEPRINT,),
-            values_belief_system=Dimension(Dimension.VALUES_BELIFE_SYSTEM,),
-            personality_authenticity=Dimension(Dimension.PERSONALITY_AUTHENTICITY,),
-            relationship_readiness=Dimension(Dimension.RELATIONSHIP_READINESS,),
-            life_compatibility_matrix=Dimension(Dimension.LIFE_COMPATIBILITY_MATRIX,),
-            growth_challenge_threshold=Dimension(Dimension.GROWTH_CHALLENGE_THRESHOLD,),
-            intuitive_connection=Dimension(Dimension.INTUITIVE_CONNECTION)
-        )
-    )
+#     # Initialize the AI partner
+#     ai_partner = PersonaCloneAIPartner(
+#         user_profile=user_profile,
+#         gender_preference="girlfriend",
+#         persona_scores= PersonaScores(
+#             emotional_dna=Dimension(Dimension.EMOTIONAL_DNA,),
+#             communication_blueprint=Dimension(Dimension.COMMUNICATION_BLUEPRINT,),
+#             values_belief_system=Dimension(Dimension.VALUES_BELIFE_SYSTEM,),
+#             personality_authenticity=Dimension(Dimension.PERSONALITY_AUTHENTICITY,),
+#             relationship_readiness=Dimension(Dimension.RELATIONSHIP_READINESS,),
+#             life_compatibility_matrix=Dimension(Dimension.LIFE_COMPATIBILITY_MATRIX,),
+#             growth_challenge_threshold=Dimension(Dimension.GROWTH_CHALLENGE_THRESHOLD,),
+#             intuitive_connection=Dimension(Dimension.INTUITIVE_CONNECTION)
+#         )
+#     )
 
-    # Start first conversation
-    first_message = ai_partner.initiate_first_conversation_again()
-    print(f"AI: {first_message}")
+#     # Start first conversation
+#     first_message = ai_partner.initiate_first_conversation_again()
+#     print(f"AI: {first_message}")
 
-    # Example conversation flow
-    ### Now we won't be publishing like this ----------------------------- start
-    # user_responses = [
-    #     "Hi Emma! My day has been pretty good, just finished a big project at work",
-    #     "I'm passionate about photography and traveling to new places",
-    #     "When I'm stressed, I usually go for a run or listen to music"
-    # ]
+#     # Example conversation flow
+#     ### Now we won't be publishing like this ----------------------------- start
+#     # user_responses = [
+#     #     "Hi Emma! My day has been pretty good, just finished a big project at work",
+#     #     "I'm passionate about photography and traveling to new places",
+#     #     "When I'm stressed, I usually go for a run or listen to music"
+#     # ]
 
-    # for user_response in user_responses:
-    #     # ai_response = ai_partner.generate_caring_response(
-    #     #     user_response, 
-    #     #     {"session_number": ai_partner.session_count}
-    #     # )
-    #     ai_response = await ai_partner.generate_response(
-    #         user_response, 
-    #         {"session_number": ai_partner.session_count}
-    #     )
-    #     print(f"User: {user_response}")
-    #     print(f"AI: {ai_response}")
-    #     ai_partner.session_count += 1
-    ### Now we won't be publishing like this ----------------------------- stop
+#     # for user_response in user_responses:
+#     #     # ai_response = ai_partner.generate_caring_response(
+#     #     #     user_response, 
+#     #     #     {"session_number": ai_partner.session_count}
+#     #     # )
+#     #     ai_response = await ai_partner.generate_response(
+#     #         user_response, 
+#     #         {"session_number": ai_partner.session_count}
+#     #     )
+#     #     print(f"User: {user_response}")
+#     #     print(f"AI: {ai_response}")
+#     #     ai_partner.session_count += 1
+#     ### Now we won't be publishing like this ----------------------------- stop
 
-    # Only one response for now
-    user_response = "Hi Emma! My day has been pretty good, just finished a big project at work"
+#     # Only one response for now
+#     user_response = "Hi Emma! My day has been pretty good, just finished a big project at work"
 
-    # Generate response
-    ai_response = await ai_partner.generate_response(
-        user_response, 
-        {"session_number": ai_partner.session_count}
-    )
+#     # Generate response
+#     ai_response = await ai_partner.generate_response(
+#         user_response, 
+#         {"session_number": ai_partner.session_count}
+#     )
 
-    print(f"User: {user_response}")
+#     print(f"User: {user_response}")
 
-    print(f"AI: {ai_response}")
+#     print(f"AI: {ai_response}")
 
-    # Update conversation history
-    # ai_partner.conversation_history.append({
-    #     "timestamp": datetime.now(),
-    #     "user_message": user_response,
-    #     "ai_response": ai_response,
-    #     "session_number": ai_partner.session_count
-    # })
+#     # Update conversation history
+#     # ai_partner.conversation_history.append({
+#     #     "timestamp": datetime.now(),
+#     #     "user_message": user_response,
+#     #     "ai_response": ai_response,
+#     #     "session_number": ai_partner.session_count
+#     # })
 
-    # Update it on mongodb
-    await mdb_manager.update_persona_conversation(
-        user_id=user_profile.uid,
-        title=ai_partner.conversation_history[-1]["user_message"],
-        timestamp=ai_partner.conversation_history[-1]["timestamp"]
-    )
+#     # Update it on mongodb
+#     await mdb_manager.update_persona_conversation(
+#         user_id=user_profile.uid,
+#         title=ai_partner.conversation_history[-1]["user_message"],
+#         timestamp=ai_partner.conversation_history[-1]["timestamp"]
+#     )
 
-    # Check progress
-    completion_score = ai_partner.calculate_overall_completion_score()
-    print(f"Persona Completion: {completion_score:.1f}%")
+#     # Check progress
+#     completion_score = ai_partner.calculate_overall_completion_score()
+#     print(f"Persona Completion: {completion_score:.1f}%")

@@ -59,13 +59,13 @@ class Message(MongoBaseModel):
     read: bool = False
     read_at: Optional[datetime] = None
 
-class Conversation(MongoBaseModel):
-    user_id_1: str
-    user_id_2: str
-    last_message_id: Optional[str] = None
-    last_message_at: Optional[datetime] = None
-    messages_count: int = 0
-    is_active: bool = True
+# class Conversation(MongoBaseModel):
+#     user_id_1: str
+#     user_id_2: str
+#     last_message_id: Optional[str] = None
+#     last_message_at: Optional[datetime] = None
+#     messages_count: int = 0
+#     is_active: bool = True
 
 class UserTask(MongoBaseModel):
     user_id: str

@@ -2,6 +2,7 @@ from pymongo import AsyncMongoClient
 from pymongo.asynchronous.database import AsyncDatabase
 from typing import Optional
 import logging
+from dto.persona import AiCompanionDto
 from model.chat_prompt import ChatPrompt, Conversation
 from model.user_profile import UserProfile
 from fastapi import HTTPException
@@ -142,15 +143,25 @@ class DatabaseManager:
     ## Chat prompts --------------------------------------------------------- STOP ---------------------------    
     
     ## Conversation stuff ------------------------------------------------------------------ START --------------------
-    async def add_conversation(self, title:str, user_id:str, timestamp: datetime):
+    # async def add_conversation(self, title:str, user_id:str, timestamp: datetime):
+    #     try:
+    #         print(title, user_id, timestamp)
+    #         # conv = Conversation(uid=user_id, title=title, timestamp=timestamp)
+    #         conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
+    #         result = await self.bot_conversations.insert_one(document=conv)
+    #         return result.inserted_id
+    #     except Exception as e:
+    #         raise HTTPException(status_code=500, detail="Error in inserting conversation prompt {e}")
+        
+    # Create AI companion # This is the only way to add a new AI companion conversation
+    async def create_ai_companion(self, user_id: str, companion: AiCompanionDto, timestamp: datetime):
+        """Create a new AI companion conversation."""
         try:
-            print(title, user_id, timestamp)
-            # conv = Conversation(uid=user_id, title=title, timestamp=timestamp)
-            conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
+            conv = Conversation.create(uid=user_id, timestamp=timestamp, companion=companion)
             result = await self.bot_conversations.insert_one(document=conv)
             return result.inserted_id
         except Exception as e:
-            raise HTTPException(status_code=500, detail="Error in inserting conversation prompt {e}")
+            raise HTTPException(status_code=500, detail="Error in creating AI companion conversation {e}")
         
     async def paging_conversations(self, user_id, page: int, per_page:int)->list[Conversation]:
         # skip = page*per_page
@@ -234,11 +245,11 @@ class DatabaseManager:
         result = await self.persona_conversations.find({"uid": user_id}).skip(skip).limit(per_page).to_list()
         return [Conversation(**conv) for conv in result]
 
-    async def update_persona_conversation(self, user_id: str, title: str, timestamp: datetime):
+    async def update_persona_conversation(self, user_id: str, summary: str, summary_timestamp: datetime):
         """Update existing persona conversation or create a new one."""
         try:
-            conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
-            result = await self.persona_conversations.update_one({"uid": user_id}, {"$set": conv}, upsert=True)
+            # conv = Conversation.create(uid=user_id, title=title, timestamp=timestamp)
+            result = await self.persona_conversations.update_one({"uid": user_id}, {"$set": {"summary": summary, "summary_timestamp": summary_timestamp}}, upsert=True)
             return result.upserted_id
         except Exception as e:
             raise HTTPException(status_code=500, detail="Error in updating persona conversation {e}")

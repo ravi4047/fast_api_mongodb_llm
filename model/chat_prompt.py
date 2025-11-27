@@ -3,6 +3,8 @@ from datetime import datetime
 from bson import ObjectId
 from typing import Optional
 
+from dto.persona import AiCompanionDto
+
 ## I am planning to use the ChatPrompt or the DialogPrompt to save both user prompt and the ai content.
 class ChatPrompt(BaseModel):
     """ChatPrompt model."""
@@ -32,10 +34,13 @@ class Conversation(BaseModel):
     """Conversation model"""
     # id: Optional[str] = Field(...,alias="_id")
     id: Optional[ObjectId] = Field(...,alias="_id")
-    title: str
+    # title: str
     uid: str
     timestamp: datetime
     long_term_memory: str ## This is for conversation.
+
+    # The person who I will be talking to, like a friend, family member, or a mentor.
+    companion: AiCompanionDto
 
     class Config:
         allow_population_by_field_name = True
@@ -43,9 +48,9 @@ class Conversation(BaseModel):
         json_encoders = {ObjectId: str}
 
     @classmethod
-    def create(cls, title:str, uid:str, timestamp: datetime):
+    def create(cls, uid:str, timestamp: datetime, companion: AiCompanionDto):
         """Create and return a new ChatPrompt instance"""
-        return cls(_id=ObjectId(), title=title, uid=uid, timestamp=timestamp, long_term_memory="")
+        return cls(_id=ObjectId(), uid=uid, timestamp=timestamp, long_term_memory="", companion=companion)
 
 # 🤔🤔 When I try to import I only want ChatPrompt class to be exported not those which I have imported like BaseModel or datetime.
 #  How to make it private in fastapi

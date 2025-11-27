@@ -5,7 +5,8 @@ from contextlib import asynccontextmanager
 # from routes.bio_maker import router as bioRouter
 from llm.llm import setup_emotion_classifier, setup_emotion_sentiments, setup_slm_azure
 from persona_cloning.emotion_handler import EmotionHandler
-from routes import bio_maker, chat, conversations
+from routes import bio_maker, chat, conversations, persona
+
 from mdb.db_manager import DatabaseManager
 from ddb.ddb_manager import Dynamo_Manager
 from configuration import DB_NAME, EMBEDDING_MODEL , GROQ_API_KEY, LLAMA_MODEL, MONGODB_URI
@@ -168,3 +169,6 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(chat.router, tags=["chat"], prefix="/chat")
 app.include_router(conversations.router, tags=["conversation"], prefix="/conversation")
 app.include_router(bio_maker.router, tags=["bio maker"], prefix="/bio")
+
+# Adding the websocket persona routes
+app.include_router(persona.router, tags=["persona_cloning"], prefix="/persona")

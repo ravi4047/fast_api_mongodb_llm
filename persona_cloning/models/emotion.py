@@ -4,7 +4,6 @@ from typing import List
 
 from persona_cloning.enums.emotion import EmotionCategory, EmotionClassifierLabel, EmotionIntensity
 
-
 @dataclass
 class DetectedEmotion:
     name: str
